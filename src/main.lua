@@ -73,7 +73,6 @@ function love.load()
 end
 
 function love.draw()
-  love.graphics.scale(0.5)
   if state == "title" then
     love.graphics.draw(bg[0],0,0)
     love.graphics.setColor(0,0,0,255)
