@@ -21,7 +21,7 @@ function love.load()
   --img_key[1.5] = love.graphics.newImage("assets/key_1.5.png")
   --img_key[2] = love.graphics.newImage("assets/key_2.png")
   img_key[3] = love.graphics.newImage("assets/key_3.png")
-  
+
   levelcat = {}
   levelcat[1] = {}
   levelcat[1].stand = love.graphics.newImage("assets/whitecat_1.png")
@@ -48,10 +48,10 @@ function love.load()
 
   rate_coins_dt = 0
   life_coins = 4
-  
+
   rate_craps_dt = 0
   life_craps = 10
-  
+
   rate_ghostcats_dt = 0
   life_ghostcats = 9
 
@@ -68,11 +68,12 @@ function love.load()
   cat.level_coins[1] = 0
   cat.level_coins[2] = 0
   cat.level_coins[3] = 0
-  
+
   level_init()
 end
 
 function love.draw()
+  love.graphics.scale(0.5)
   if state == "title" then
     love.graphics.draw(bg[0],0,0)
     love.graphics.setColor(0,0,0,255)
@@ -101,7 +102,7 @@ function love.draw()
     local key_y = 350-17
     love.graphics.draw(img_key[1],64+key_x,key_y,0,.5)
     love.graphics.draw(img_key[1],key_x,64+key_y,0,.5)
-    love.graphics.draw(img_key[1],64+key_x,64+key_y,0,.5)    
+    love.graphics.draw(img_key[1],64+key_x,64+key_y,0,.5)
     love.graphics.draw(img_key[1],128+key_x,64+key_y,0,.5)
     love.graphics.draw(img_key[3],key_x,128+key_y,0,.5)
     love.graphics.setFont(key_font)
@@ -159,9 +160,9 @@ function love.draw()
     else
       love.graphics.draw(cat.img,cat.x,cat.y,jrot,-1,1,150,150)
     end
-    
+
     --love.graphics.circle("line",cat.x,cat.y,100,100) --cat intersection debug
-    
+
     for i,v in ipairs(coins) do
       if v.time + life_coins > love.timer.getTime() then
         if v.time + life_coins - 1 < love.timer.getTime() then
@@ -203,11 +204,11 @@ function love.draw()
         if temp_frame > 360 then
           love.graphics.draw(levelcat[i].stand,i_x+levelcat[i].stand:getWidth()/2,i_y,0,1,1,levelcat[i].stand:getWidth()/2)
         elseif temp_frame > 240 then
-          love.graphics.draw(levelcat[i].move,i_x+levelcat[i].move:getWidth()/2,i_y,0,1,1,levelcat[i].move:getWidth()/2)        
+          love.graphics.draw(levelcat[i].move,i_x+levelcat[i].move:getWidth()/2,i_y,0,1,1,levelcat[i].move:getWidth()/2)
         elseif temp_frame > 120 then
           love.graphics.draw(levelcat[i].stand,i_x+levelcat[i].stand:getWidth()/2,i_y,0,-1,1,levelcat[i].stand:getWidth()/2)
         else -- temp_frame <= 120
-          love.graphics.draw(levelcat[i].move,i_x+levelcat[i].move:getWidth()/2,i_y,0,-1,1,levelcat[i].move:getWidth()/2)        
+          love.graphics.draw(levelcat[i].move,i_x+levelcat[i].move:getWidth()/2,i_y,0,-1,1,levelcat[i].move:getWidth()/2)
         end
       else
         love.graphics.printf("FAIL",i_x,i_y-64,200,"center")
@@ -215,11 +216,11 @@ function love.draw()
         if temp_frame > 360 then
           love.graphics.draw(img_sarah_forward,i_x+img_sarah_forward:getWidth()/2,i_y,0,1,1,img_sarah_forward:getWidth()/2)
         elseif temp_frame > 240 then
-          love.graphics.draw(img_sarah_backward,i_x+img_sarah_backward:getWidth()/2,i_y,0,1,1,img_sarah_backward:getWidth()/2)        
+          love.graphics.draw(img_sarah_backward,i_x+img_sarah_backward:getWidth()/2,i_y,0,1,1,img_sarah_backward:getWidth()/2)
         elseif temp_frame > 120 then
           love.graphics.draw(img_sarah_forward,i_x+img_sarah_forward:getWidth()/2,i_y,0,-1,1,img_sarah_forward:getWidth()/2)
         else -- temp_frame <= 120
-          love.graphics.draw(img_sarah_backward,i_x+img_sarah_backward:getWidth()/2,i_y,0,-1,1,img_sarah_backward:getWidth()/2)        
+          love.graphics.draw(img_sarah_backward,i_x+img_sarah_backward:getWidth()/2,i_y,0,-1,1,img_sarah_backward:getWidth()/2)
         end
       end
     end
@@ -231,9 +232,9 @@ function love.update(dt)
   if state == "title" then
     title_dt = (title_dt + dt) % (math.pi*2)
   elseif state == "game" then
-    
+
     cat.timeleft = cat.timeleft - dt
-    
+
     if not scamper_for_level and cat.timeleft <= 0 then
       scamper_for_level = {
         x = -150,
@@ -242,14 +243,14 @@ function love.update(dt)
       }
       TEsound.play("assets/level"..current_level..".ogg")
     end
-    
+
     if scamper_for_level then
       scamper_for_level.x = scamper_for_level.x + 3*210*dt
     end
-    
+
     if cat.timeleft < -5 then
       if cat.level_fail[current_level] then
-        cat.level_coins[current_level] = 0      
+        cat.level_coins[current_level] = 0
       else
         cat.level_coins[current_level] = cat.coins
       end
@@ -261,9 +262,9 @@ function love.update(dt)
         state = "gameover"
       end
     end
-    
+
     -- COINS
-    
+
     rate_coins_dt = rate_coins_dt + dt
     if rate_coins_dt >= rate_coins and cat.timeleft > 0 then
       rate_coins_dt = 0
@@ -275,7 +276,7 @@ function love.update(dt)
       }
       table.insert(coins,coin)
     end
-    
+
     for i,v in ipairs(coins) do
       if v.time + life_coins < love.timer.getTime() then
         table.remove(coins,i)
@@ -286,9 +287,9 @@ function love.update(dt)
         TEsound.play("assets/coin.ogg")
       end
     end
-    
+
     -- CRAPS
-    
+
     rate_craps_dt = rate_craps_dt + dt
     if rate_craps_dt >= rate_craps and cat.timeleft > 0 then
       rate_craps_dt = 0
@@ -300,7 +301,7 @@ function love.update(dt)
       }
       table.insert(craps,crap)
     end
-    
+
     for i,v in ipairs(craps) do
       if v.time + life_craps < love.timer.getTime() then
         table.remove(craps,i)
@@ -316,9 +317,9 @@ function love.update(dt)
         TEsound.play("assets/coins_lost_crap.ogg")
       end
     end
-    
+
     -- GHOSTCATS
-    
+
     rate_ghostcats_dt = rate_ghostcats_dt + dt
     if rate_ghostcats_dt >= rate_ghostcats and cat.timeleft > 0 then
       rate_ghostcats_dt = 0
@@ -332,7 +333,7 @@ function love.update(dt)
       }
       table.insert(ghostcats,ghostcat)
     end
-    
+
     for i,v in ipairs(ghostcats) do
       if v.time + life_ghostcats < love.timer.getTime() then
         table.remove(ghostcats,i)
@@ -344,9 +345,9 @@ function love.update(dt)
           TEsound.play("assets/coins_lost_ghostcat.ogg")
       end
     end
-    
+
     -- MOVEMENT (JUMPING AND WALKING)
-    
+
     if key_pressed.w then
       if not cat.jumping then
         cat.jumping = 0
@@ -375,9 +376,9 @@ function love.update(dt)
         cat.jumping = cat.jumping + dt*400
       end
     end
-    
+
     -- PLAYER GRAPHICS
-    
+
     if (key_pressed.a or key_pressed.d) and not cat.jumping then
       local temp_frame = (love.timer.getTime()*1000)%480
       if temp_frame > 320 then
@@ -396,29 +397,29 @@ function love.update(dt)
         cat.img = playercat.stand
       end
     end
-    
+
     -- LOOP CAT
-    
+
     --[[
-    
+
     if cat.x <= -50 then
       cat.x = 800 + 50
     end
     if cat.x > 800 + 50 then
       cat.x = -50
     end
-    
+
     --]]
-    
+
     -- STOP CAT
-    
+
     if cat.x <= 0 then
       cat.x = 0
     end
     if cat.x > 800 then
       cat.x = 800
     end
-    
+
     for i,v in ipairs(coins_lost) do
       if v.y > 650 then
         table.remove(coins_lost,i)
@@ -427,7 +428,7 @@ function love.update(dt)
         v.y = v.y + math.abs(math.cos(v.dir)*100*dt) + 1
       end
     end
-    
+
   end
 end
 
@@ -438,7 +439,7 @@ end
 function draw_overlay()
   love.graphics.setColor(0,0,0,255)
   if cat.timeleft < 0 and current_level ~= 3 then
-    love.graphics.printf("NEXT LEVEL IN "..string.format("%.0f",5-math.abs(cat.timeleft)),0,514-8,800,"center")      
+    love.graphics.printf("NEXT LEVEL IN "..string.format("%.0f",5-math.abs(cat.timeleft)),0,514-8,800,"center")
   else
     love.graphics.printf("LEVEL "..current_level,0,514-8,800,"center")
   end
@@ -509,7 +510,7 @@ key_pressed.space = false;
 function love.keypressed(key)
   if key == "escape" then
     if state == "quit" then
-      love.event.push("q")    
+      love.event.push("q")
     else
       state = "quit"
     end
